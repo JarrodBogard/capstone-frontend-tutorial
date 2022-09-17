@@ -1,23 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import { List } from "./List";
+import "./App.css";
+import { CustomerItem } from "./CustomerItem";
+import { CreateUserForm } from "./CreateUserForm";
 
 function App() {
+  const [customers, setCustomers] = useState([]);
+  const [trades, setTrades] = useState([]);
+
+  // useEffect(() => {
+  //   fetch("https://capstone-backend.vercel.app/customers")
+  //     .then((res) => res.json())
+  //     .then((data) => console.log(data));
+  // }, []);
+
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      const data = await fetch("https://capstone-backend.vercel.app/customers");
+
+      const json = await data.json();
+
+      setCustomers(json);
+    };
+
+    const fetchTradeData = async () => {
+      const data = await fetch("https://capstone-backend.vercel.app/trades");
+
+      const json = await data.json();
+
+      setTrades(json);
+    };
+
+    fetchTradeData();
+    fetchCustomerData();
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchTradeData = async () => {
+  //     const data = await fetch("https://capstone-backend.vercel.app/trades");
+
+  //     const json = await data.json();
+
+  //     setTrades(json);
+  //   };
+
+  //   fetchTradeData();
+  // }, []);
+
+  useEffect(() => {
+    console.log({ customers }, { trades });
+    // console.log({ trades });
+  }, [customers, trades]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CreateUserForm />
+      <List items={customers} component={CustomerItem} />
     </div>
   );
 }
